@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="institute_of_learning">Institute of Learning</string>
+    <string name="discipline_and_excellence">Discipline And Excellence</string>
+    <string name="student_register">student_register</string>
+    <string name="username">username</string>
+    <string name="email">email</string>
+    <string name="register">register</string>
+    <string name="already_have_an_account">already_have_an_account</string>
+    <string name="login_here">login_here</string>
+
+
+    <!--  feature/Home Strings  -->
+    <string name="feature_home_dashboard">Dashboard</string>
+    <string name="feature_home_course">Course</string>
+    <string name="feature_home_profile">Profile</string>
+</resources>
