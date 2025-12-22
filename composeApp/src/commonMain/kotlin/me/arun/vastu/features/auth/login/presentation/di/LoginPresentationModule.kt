@@ -8,5 +8,5 @@ import org.koin.dsl.module
  * Koin module that provides presentation layer dependencies (ViewModel) for the Login feature.
  */
 val loginPresentationModule = module {
-    viewModel { LoginViewModel() }
+    viewModel { LoginViewModel(get(), get()) }
 }

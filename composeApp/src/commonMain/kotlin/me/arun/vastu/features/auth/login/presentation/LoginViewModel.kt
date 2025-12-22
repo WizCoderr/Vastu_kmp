@@ -10,11 +10,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import me.arun.vastu.domain.usecase.auth.SaveAuthTokenUseCase
+import me.arun.vastu.features.auth.login.domain.model.LoginRequest
+import me.arun.vastu.features.auth.login.domain.usecase.LoginUseCase
+
 /**
  * Manages the business logic and state for the Login feature.
  */
 
 class LoginViewModel(
+    private val loginUseCase: LoginUseCase,
+    private val saveAuthTokenUseCase: SaveAuthTokenUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
@@ -34,8 +40,19 @@ class LoginViewModel(
 
     private fun login() {
         viewModelScope.launch {
-            // TODO: Implement login logic
-            _event.emit(LoginEvent.NavigateToHome)
+            _state.update { it.copy(isLoading = true) }
+            val currentState = _state.value
+            val request = LoginRequest(
+                email = currentState.email,
+                password = currentState.password
+            )
+            loginUseCase(request).onSuccess { result ->
+                saveAuthTokenUseCase(result.authResult.token)
+                _state.update { it.copy(isLoading = false) }
+                _event.emit(LoginEvent.NavigateToHome)
+            }.onFailure {
+                _state.update { it.copy(isLoading = false) }
+            }
         }
     }
 

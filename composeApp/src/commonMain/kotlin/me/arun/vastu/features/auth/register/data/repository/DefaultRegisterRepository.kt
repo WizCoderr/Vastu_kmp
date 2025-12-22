@@ -1,19 +1,24 @@
 package me.arun.vastu.features.auth.register.data.repository
 
-import me.arun.vastu.features.auth.register.domain.model.Register
+import me.arun.vastu.data.mapper.toData
+import me.arun.vastu.data.mapper.toDomain
+import me.arun.vastu.data.remote.AuthRemoteDataSource
+import me.arun.vastu.features.auth.register.domain.model.RegisterRequest
+import me.arun.vastu.features.auth.register.domain.model.RegisterResult
 import me.arun.vastu.features.auth.register.domain.repository.RegisterRepository
 
 
 /**
  * Concrete implementation of the repository for the Register feature.
  */
-class DefaultRegisterRepository : RegisterRepository {
+class DefaultRegisterRepository(
+    private val authRemoteDataSource: AuthRemoteDataSource
+) : RegisterRepository {
 
-    override suspend fun getRegisterData(): Result<Register> {
+    override suspend fun register(request: RegisterRequest): Result<RegisterResult> {
         return try {
-            val domainModel =
-                Register(name = "Wizcoderr", email = "ssayam200@gmail.com", password = "Sayam123")
-            Result.success(domainModel)
+            val authResponse = authRemoteDataSource.register(request.toData())
+            Result.success(RegisterResult(authResponse.toDomain()))
         } catch (e: Exception) {
             Result.failure(e)
         }

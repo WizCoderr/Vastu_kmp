@@ -8,5 +8,5 @@ import org.koin.dsl.module
  * Koin module that provides data layer dependencies for the Register feature.
  */
 val registerDataModule = module {
-    factory<RegisterRepository> { DefaultRegisterRepository() }
+    factory<RegisterRepository> { DefaultRegisterRepository(get()) }
 }

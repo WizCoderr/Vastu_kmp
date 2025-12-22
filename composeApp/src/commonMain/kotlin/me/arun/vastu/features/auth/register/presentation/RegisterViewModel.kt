@@ -9,10 +9,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import me.arun.vastu.domain.usecase.auth.SaveAuthTokenUseCase
+import me.arun.vastu.features.auth.register.domain.model.RegisterRequest
+import me.arun.vastu.features.auth.register.domain.usecase.RegisterUseCase
+
 /**
  * Manages the business logic and state for the Register feature.
  */
-class RegisterViewModel : ViewModel() {
+class RegisterViewModel(
+    private val registerUseCase: RegisterUseCase,
+    private val saveAuthTokenUseCase: SaveAuthTokenUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(RegisterState())
     val state = _state.asStateFlow()
@@ -38,8 +45,20 @@ class RegisterViewModel : ViewModel() {
     }
     private fun registration() {
         viewModelScope.launch {
-            // TODO: Implement registration logic
-            _event.emit(RegisterEvent.NavigateToHome)
+            _state.update { it.copy(isLoading = true) }
+            val currentState = _state.value
+            val request = RegisterRequest(
+                name = currentState.userName,
+                email = currentState.email,
+                password = currentState.password
+            )
+            registerUseCase(request).onSuccess { result ->
+                saveAuthTokenUseCase(result.authResult.token)
+                _state.update { it.copy(isLoading = false) }
+                _event.emit(RegisterEvent.NavigateToHome)
+            }.onFailure {
+                _state.update { it.copy(isLoading = false) }
+            }
         }
     }
 }

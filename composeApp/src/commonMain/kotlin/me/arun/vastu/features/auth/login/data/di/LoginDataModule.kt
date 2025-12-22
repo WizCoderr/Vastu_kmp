@@ -8,5 +8,5 @@ import org.koin.dsl.module
  * Koin module that provides data layer dependencies for the Login feature.
  */
 val loginDataModule = module {
-    factory<LoginRepository> { DefaultLoginRepository() }
+    factory<LoginRepository> { DefaultLoginRepository(get()) }
 }

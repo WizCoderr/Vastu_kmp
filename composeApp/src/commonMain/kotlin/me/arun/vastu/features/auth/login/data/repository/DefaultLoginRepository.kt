@@ -1,18 +1,24 @@
 package me.arun.vastu.features.auth.login.data.repository
 
-import me.arun.vastu.features.auth.login.domain.model.Login
+import me.arun.vastu.data.mapper.toData
+import me.arun.vastu.data.mapper.toDomain
+import me.arun.vastu.data.remote.AuthRemoteDataSource
+import me.arun.vastu.features.auth.login.domain.model.LoginRequest
+import me.arun.vastu.features.auth.login.domain.model.LoginResult
 import me.arun.vastu.features.auth.login.domain.repository.LoginRepository
 
 
 /**
  * Concrete implementation of the repository for the Login feature.
  */
-class DefaultLoginRepository() : LoginRepository {
+class DefaultLoginRepository(
+    private val authRemoteDataSource: AuthRemoteDataSource
+) : LoginRepository {
 
-    override suspend fun getLoginData(): Result<Login> {
+    override suspend fun login(request: LoginRequest): Result<LoginResult> {
         return try {
-            val domainModel = Login(id = "1", data = "Sample data from repository")
-            Result.success(domainModel)
+            val authResponse = authRemoteDataSource.login(request.toData())
+            Result.success(LoginResult(authResponse.toDomain()))
         } catch (e: Exception) {
             Result.failure(e)
         }
