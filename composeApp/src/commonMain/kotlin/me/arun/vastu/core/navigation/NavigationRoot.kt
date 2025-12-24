@@ -18,7 +18,8 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.StateFlow // <--- Added this line
+import me.arun.vastu.features.vedio.presentation.VideoPlayerRoot
 
 // --- This would be in your DI setup and injected ---
 // Placeholder for authentication state
@@ -102,9 +103,9 @@ fun NavigationRoot(
                         }
                     }
                     entry<AppScreen.CourseDetails> {
-                         PlaceholderScreen("Course Details for ID: ${it.key.courseId}") {
+                         PlaceholderScreen("Course Details for ID: ${it.courseId}") {
                             Button(onClick = {
-                                navigator.navigateToProtected(AppScreen.Lecture(it.key.courseId, "1"), authViewModel.isUserLoggedIn.value)
+                                navigator.navigateToProtected(AppScreen.Lecture(it.courseId, "1"), authViewModel.isUserLoggedIn.value)
                             }) {
                                 Text("Watch Lecture")
                             }
@@ -114,7 +115,7 @@ fun NavigationRoot(
                         PlaceholderScreen("Stats")
                     }
                     entry<AppScreen.Login> {
-                        val key = it.key
+                        val key = it
                         PlaceholderScreen("Login") {
                             Button(onClick = {
                                 authViewModel.login()
@@ -144,12 +145,8 @@ fun NavigationRoot(
                             }
                         }
                     }
-                    entry<AppScreen.Lecture> {
-                        val key = it.key
-                        PlaceholderScreen("Lecture ${key.lectureId} from Course ${key.courseId}")
-                    }
                     entry<AppScreen.Enroll> {
-                         PlaceholderScreen("Enroll in course ${it.key.courseId}")
+                         PlaceholderScreen("Enroll in course ${it.courseId}")
                     }
                 }
             ),
