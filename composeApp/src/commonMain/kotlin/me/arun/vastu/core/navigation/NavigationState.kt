@@ -70,10 +70,15 @@ fun rememberNavigationState(
 val serializersConfig = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
-            subclass(MainNavigation.Splash::class, MainNavigation.Splash.serializer())
-            subclass(MainNavigation.Auth::class, MainNavigation.Auth.serializer())
-            subclass(MainNavigation.Home::class, MainNavigation.Home.serializer())
-            subclass(MainNavigation.Settings::class, MainNavigation.Settings.serializer())
+            subclass(AppScreen.Dashboard::class, AppScreen.Dashboard.serializer())
+            subclass(AppScreen.Courses::class, AppScreen.Courses.serializer())
+            subclass(AppScreen.CourseDetails::class, AppScreen.CourseDetails.serializer())
+            subclass(AppScreen.Stats::class, AppScreen.Stats.serializer())
+            subclass(AppScreen.Login::class, AppScreen.Login.serializer())
+            subclass(AppScreen.Register::class, AppScreen.Register.serializer())
+            subclass(AppScreen.Enroll::class, AppScreen.Enroll.serializer())
+            subclass(AppScreen.Lecture::class, AppScreen.Lecture.serializer())
+            subclass(AppScreen.MyCourses::class, AppScreen.MyCourses.serializer())
         }
     }
 }
