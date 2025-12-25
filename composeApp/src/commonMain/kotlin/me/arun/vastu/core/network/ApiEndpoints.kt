@@ -1,7 +1,7 @@
 package me.arun.vastu.core.network
 
 object ApiEndpoints {
-    private const val BASE_URL = "https://vastu-backend-4762.onrender.com/"
+    const val BASE_URL = "https://b04d9a4d0d2a.ngrok-free.app/"
     const val REGISTER = "${BASE_URL}auth/register"
     const val LOGIN = "${BASE_URL}auth/login"
 

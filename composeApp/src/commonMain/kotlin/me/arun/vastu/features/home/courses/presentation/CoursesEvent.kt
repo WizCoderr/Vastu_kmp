@@ -5,5 +5,5 @@ package me.arun.vastu.features.home.courses.presentation
  * These events are meant to be consumed only once (e.g., navigation, snackbar).
  */
 sealed interface CoursesEvent {
-    data class NavigateToCourse(val courseId: String) : CoursesEvent
+    data class NavigateToCourseDetails(val courseId: String) : CoursesEvent
 }

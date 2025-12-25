@@ -1,10 +1,6 @@
 package me.arun.vastu.core.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -12,14 +8,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow // <--- Added this line
-import me.arun.vastu.features.vedio.presentation.VideoPlayerRoot
+import kotlinx.coroutines.flow.StateFlow
+import me.arun.vastu.features.auth.login.presentation.LoginEvent
+import me.arun.vastu.features.auth.login.presentation.LoginRoot
+import me.arun.vastu.features.auth.register.presentation.RegisterEvent
+import me.arun.vastu.features.auth.register.presentation.RegisterRoot
+import me.arun.vastu.features.home.courses.presentation.CoursesEvent
+import me.arun.vastu.features.home.courses.presentation.CoursesRoot
+import me.arun.vastu.features.home.courses.screens.details.presentation.DetailsRoot
+import me.arun.vastu.features.home.dashboard.presentation.DashboardEvent
+import me.arun.vastu.features.home.dashboard.presentation.DashboardRoot
 
 // --- This would be in your DI setup and injected ---
 // Placeholder for authentication state
@@ -53,9 +56,6 @@ fun NavigationRoot(
     val navigator = remember {
         Navigator(navigationState)
     }
-    // This would be injected by Koin
-    val authViewModel: AuthViewModel = remember { AuthViewModel() }
-
     val currentScreen = navigationState.backStacks[navigationState.topLevelRoute]?.lastOrNull()
 
     val showBottomBar = currentScreen !is AppScreen.Lecture
@@ -84,82 +84,54 @@ fun NavigationRoot(
             entries = navigationState.toEntries(
                 entryProvider = entryProvider {
                     entry<AppScreen.Dashboard> {
-                        PlaceholderScreen("Dashboard") {
-                            // Example of a protected action
-                            Button(onClick = {
-                                navigator.navigateToProtected(AppScreen.MyCourses, authViewModel.isUserLoggedIn.value)
-                            }) {
-                                Text("Go to My Courses")
+                        DashboardRoot {event ->
+                            when(event){
+                                is DashboardEvent.NavigateToCourse -> navigator.navigate(AppScreen.CourseDetails(event.courseId))
+                                DashboardEvent.NavigateToProfile -> navigator.navigate(AppScreen.Stats)
+                                 is DashboardEvent.NavigateToVideoPlayer -> TODO()
                             }
+
                         }
                     }
                     entry<AppScreen.Courses> {
-                        PlaceholderScreen("Courses") {
-                             Button(onClick = {
-                                navigator.navigate(AppScreen.CourseDetails("1"))
-                            }) {
-                                Text("Go to Course Details")
+                        CoursesRoot {event ->
+                            when(event){
+                                is CoursesEvent.NavigateToCourseDetails -> navigator.navigate(AppScreen.CourseDetails(event.courseId))
                             }
                         }
                     }
                     entry<AppScreen.CourseDetails> {
-                         PlaceholderScreen("Course Details for ID: ${it.courseId}") {
-                            Button(onClick = {
-                                navigator.navigateToProtected(AppScreen.Lecture(it.courseId, "1"), authViewModel.isUserLoggedIn.value)
-                            }) {
-                                Text("Watch Lecture")
+                        DetailsRoot {event ->
+                            when(event){
+                                else -> {}
                             }
                         }
                     }
                     entry<AppScreen.Stats> {
-                        PlaceholderScreen("Stats")
                     }
                     entry<AppScreen.Login> {
-                        val key = it
-                        PlaceholderScreen("Login") {
-                            Button(onClick = {
-                                authViewModel.login()
-                                // After login, navigate to the intended destination if it exists
-                                val redirectTo = key.redirectTo
-                                if (redirectTo != null) {
-                                    navigator.navigate(redirectTo as AppScreen)
-                                } else {
-                                    // Fallback to Dashboard after login
-                                    navigator.navigate(AppScreen.Dashboard)
-                                }
-                            }) {
-                                Text("Log In")
+                        LoginRoot {event ->
+                            when(event){
+                                LoginEvent.NavigateToHome -> navigator.navigate(AppScreen.Dashboard)
+                                LoginEvent.NavigateToRegister -> navigator.navigate(AppScreen.Register)
                             }
                         }
                     }
                     entry<AppScreen.Register> {
-                        PlaceholderScreen("Register")
-                    }
-                    entry<AppScreen.MyCourses> {
-                        PlaceholderScreen("My Courses") {
-                            Button(onClick = {
-                                authViewModel.logout()
-                                navigator.logout()
-                            }) {
-                                Text("Logout")
+                        RegisterRoot {event ->
+                            when(event){
+                                RegisterEvent.NavigateToHome -> navigator.navigate(AppScreen.Dashboard)
+                                RegisterEvent.NavigateToLogin -> navigator.navigate(AppScreen.Login(redirectTo = AppScreen.Dashboard))
                             }
                         }
                     }
+                    entry<AppScreen.MyCourses> {
+
+                    }
                     entry<AppScreen.Enroll> {
-                         PlaceholderScreen("Enroll in course ${it.courseId}")
                     }
                 }
             ),
         )
-    }
-}
-
-@Composable
-fun PlaceholderScreen(text: String, content: @Composable () -> Unit = {}) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text)
-            content()
-        }
     }
 }

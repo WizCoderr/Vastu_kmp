@@ -25,7 +25,7 @@ class CoursesViewModel(
 
             is CoursesAction.OnCourseClick -> {
                 emitEvent(
-                    CoursesEvent.NavigateToCourse(action.courseId)
+                    CoursesEvent.NavigateToCourseDetails(action.courseId)
                 )
             }
         }

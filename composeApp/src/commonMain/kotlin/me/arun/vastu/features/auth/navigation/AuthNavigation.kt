@@ -1,6 +1,7 @@
 package me.arun.vastu.features.auth.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
@@ -9,6 +10,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -35,6 +37,7 @@ fun AuthNavigation(
     navigateToHome: () -> Unit,
     saveAuthTokenUseCase: SaveAuthTokenUseCase = koinInject()
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
             serializersModule = SerializersModule {
@@ -59,7 +62,9 @@ fun AuthNavigation(
                     onEvent = { events ->
                         when (events) {
                             is RegisterEvent.NavigateToHome -> {
-                                saveAuthTokenUseCase("dummy_token")
+                                coroutineScope.launch {
+                                    saveAuthTokenUseCase("dummy_token")
+                                }
                                 navigateToHome()
                             }
 
@@ -75,7 +80,9 @@ fun AuthNavigation(
                     onEvent = { events ->
                         when (events) {
                             is LoginEvent.NavigateToHome -> {
-                                saveAuthTokenUseCase("dummy_token")
+                                coroutineScope.launch {
+                                    saveAuthTokenUseCase("dummy_token")
+                                }
                                 navigateToHome()
                             }
 

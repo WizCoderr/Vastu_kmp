@@ -3,6 +3,8 @@ package me.arun.vastu.data.mapper
 import me.arun.vastu.data.model.AuthResponse
 import me.arun.vastu.data.model.User
 import me.arun.vastu.domain.model.AuthResult
+import me.arun.vastu.domain.model.LoginRequest
+import me.arun.vastu.domain.model.RegisterRequest
 import me.arun.vastu.domain.model.UserDetails
 
 fun AuthResponse.toDomain(): AuthResult {
@@ -20,15 +22,15 @@ fun User.toDomain(): UserDetails {
     )
 }
 
-fun me.arun.vastu.domain.model.LoginRequest.toData(): me.arun.vastu.data.model.LoginRequest {
-    return me.arun.vastu.data.model.LoginRequest(
+fun LoginRequest.toData(): LoginRequest {
+    return LoginRequest(
         email = this.email,
         password = this.password
     )
 }
 
-fun me.arun.vastu.domain.model.RegisterRequest.toData(): me.arun.vastu.data.model.RegisterRequest {
-    return me.arun.vastu.data.model.RegisterRequest(
+fun RegisterRequest.toData(): RegisterRequest {
+    return RegisterRequest(
         email = this.email,
         password = this.password,
         name = this.name

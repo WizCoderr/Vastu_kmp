@@ -1,6 +1,6 @@
 package me.arun.vastu.features.auth.login.domain.di
 
-import me.arun.vastu.features.auth.login.domain.usecase.GetLoginDataUseCase
+import me.arun.vastu.features.auth.login.domain.usecase.LoginUseCase
 import org.koin.dsl.module
 
 /**

@@ -1,14 +1,11 @@
 package me.arun.vastu
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import me.arun.vastu.core.theme.VastuMobileTheme
 import me.arun.vastu.core.navigation.NavigationRoot
+import me.arun.vastu.core.theme.VastuMobileTheme
 
 @Composable
-fun App(
-    modifier: Modifier = Modifier,
-) {
+fun App() {
 VastuMobileTheme {
         NavigationRoot()
     }
