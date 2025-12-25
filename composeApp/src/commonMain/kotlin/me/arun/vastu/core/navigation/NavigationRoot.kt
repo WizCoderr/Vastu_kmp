@@ -7,15 +7,11 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import me.arun.vastu.features.auth.login.presentation.LoginEvent
 import me.arun.vastu.features.auth.login.presentation.LoginRoot
 import me.arun.vastu.features.auth.register.presentation.RegisterEvent
@@ -27,8 +23,6 @@ import me.arun.vastu.features.home.dashboard.presentation.DashboardEvent
 import me.arun.vastu.features.home.dashboard.presentation.DashboardRoot
 import me.arun.vastu.features.vedio.presentation.VideoPlayerRoot
 
-
-
 val TOP_LEVEL_DESTINATIONS: Map<NavKey, AppScreen> = mapOf(
     AppScreen.Dashboard to AppScreen.Dashboard,
     AppScreen.Courses to AppScreen.Courses,
@@ -38,8 +32,7 @@ val TOP_LEVEL_DESTINATIONS: Map<NavKey, AppScreen> = mapOf(
 @Composable
 fun NavigationRoot(
     modifier: Modifier = Modifier,
-    isLoggedIn: Boolean,
-    onLoginSuccess: () -> Unit
+    isLoggedIn: Boolean = false,
 ) {
     val navigationState = rememberNavigationState(
         startRoute = AppScreen.Dashboard,
@@ -106,7 +99,6 @@ fun NavigationRoot(
                         LoginRoot {event ->
                             when(event){
                                 LoginEvent.NavigateToHome -> {
-                                    onLoginSuccess()
                                     val redirectTo = (it).redirectTo
                                     if (redirectTo != null) {
                                         navigator.navigate(redirectTo, true)
