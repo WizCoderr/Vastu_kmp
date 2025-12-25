@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ApiResult<T>(
     val success: Boolean,
-    val data: T?,
-    val error: String?
+    val data: T? = null,
+    val error: String? = null
 )

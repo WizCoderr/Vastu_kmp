@@ -5,5 +5,5 @@ package me.arun.vastu.features.home.courses.screens.details.presentation
  * for the Details feature.
  */
 sealed interface DetailsAction {
-    // Example: data class ButtonClicked(val itemId: String) : DetailsAction
+    data object OnEnrollClick : DetailsAction
 }

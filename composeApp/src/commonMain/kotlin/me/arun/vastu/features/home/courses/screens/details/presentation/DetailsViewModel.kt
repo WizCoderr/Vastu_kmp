@@ -4,46 +4,208 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 
+import me.arun.vastu.domain.model.PaymentRequest
+
+
+import me.arun.vastu.domain.usecase.payment.CreatePaymentIntentUseCase
+
+
 import me.arun.vastu.features.home.courses.screens.details.domain.usecase.GetDetailsDataUseCase
+
+
 import kotlinx.coroutines.flow.*
+
+
 import kotlinx.coroutines.launch
 
+
+
+
+
 /**
+
+
  * Manages the business logic and state for the Details feature.
+
+
  */
 
-class DetailsViewModel  constructor(
-    private val getDetailsDataUseCase: me.arun.vastu.features.home.courses.screens.details.domain.usecase.GetDetailsDataUseCase
+
+
+
+
+class DetailsViewModel constructor(
+
+
+    private val courseId: String,
+
+
+    private val getDetailsDataUseCase: GetDetailsDataUseCase,
+
+
+    private val createPaymentIntentUseCase: CreatePaymentIntentUseCase
+
+
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(_root_ide_package_.me.arun.vastu.features.home.courses.screens.details.presentation.DetailsState())
+
+
+
+
+    private val _state = MutableStateFlow(DetailsState())
+
+
     val state = _state.asStateFlow()
 
-    private val _event = MutableSharedFlow<me.arun.vastu.features.home.courses.screens.details.presentation.DetailsEvent>()
+
+
+
+
+    private val _event = MutableSharedFlow<DetailsEvent>()
+
+
     val event = _event.asSharedFlow()
 
+
+
+
+
     init {
+
+
         loadInitialData()
+
+
     }
+
+
+
+
 
     fun onAction(action: DetailsAction) {
+
+
         when (action) {
-            else -> {
+
+
+            DetailsAction.OnEnrollClick -> {
+
+
+                viewModelScope.launch {
+
+
+                    createPaymentIntentUseCase(PaymentRequest(courseId))
+
+
+                        .onSuccess {
+
+
+                            // Handle success, e.g., navigate to payment screen
+
+
+                            // For now, just log it
+
+
+                            println("Payment intent created successfully")
+
+
+                        }
+
+
+                        .onFailure {
+
+
+                            // Handle failure
+
+
+                            println("Failed to create payment intent: ${it.message}")
+
+
+                        }
+
+
+                }
+
+
             }
+
+
         }
+
+
     }
+
+
+
+
 
     private fun loadInitialData() {
+
+
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
 
-            getDetailsDataUseCase()
-                .onSuccess {
-                }
-                .onFailure {
+
+            _state.update { it.copy(isLoading = true, error = null) }
+
+
+
+
+
+            getDetailsDataUseCase(courseId)
+
+
+                .onSuccess { details ->
+
+
+                    _state.update {
+
+
+                        it.copy(
+
+
+                            isLoading = false,
+
+
+                            details = details
+
+
+                        )
+
+
+                    }
+
+
                 }
 
-            _state.update { it.copy(isLoading = false) }
+
+                .onFailure { throwable ->
+
+
+                    _state.update {
+
+
+                        it.copy(
+
+
+                            isLoading = false,
+
+
+                            error = throwable.message ?: "Failed to load details"
+
+
+                        )
+
+
+                    }
+
+
+                }
+
+
         }
+
+
     }
+
+
 }

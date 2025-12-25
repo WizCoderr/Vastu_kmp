@@ -14,6 +14,8 @@ sealed interface AppScreen : NavKey {
     data class CourseDetails(val courseId: String) : AppScreen
     @Serializable
     data object Stats : AppScreen
+    @Serializable
+    data object Profile : AppScreen
 
     // Auth Routes
     @Serializable

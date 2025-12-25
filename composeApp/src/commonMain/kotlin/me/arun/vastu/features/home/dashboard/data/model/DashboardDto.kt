@@ -14,5 +14,6 @@ data class DashboardCourseDto(
     val progress: Int,
     val isCompleted: Boolean,
     val lastWatchedPositionMillis: Long,
-    val videoUrl: String
+    val videoUrl: String,
+    val thumbnail: String
 )

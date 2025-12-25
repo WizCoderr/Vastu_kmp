@@ -19,5 +19,6 @@ fun DashboardCourseDto.toDomain(): DashboardCourse =
         progress = progress,
         isCompleted = isCompleted,
         lastWatchedPositionMillis = lastWatchedPositionMillis,
-        videoUrl = videoUrl
+        videoUrl = videoUrl,
+        thumbnail = thumbnail
     )

@@ -5,20 +5,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import me.arun.vastu.core.navigation.NavigationRoot
 import me.arun.vastu.core.theme.VastuMobileTheme
-import me.arun.vastu.features.auth.viewmodel.AuthViewModel
-import me.arun.vastu.features.auth.viewmodel.LoginScreenState
+import me.arun.vastu.features.splash.SplashViewModel
 import org.koin.compose.viewmodel.koinViewModel
+
 
 @Composable
 fun App() {
-    val authViewModel: AuthViewModel = koinViewModel()
-    val loginState by authViewModel.loginState.collectAsState()
-    val isLoggedIn = loginState is LoginScreenState.Success
-
+    val splashViewModel: SplashViewModel = koinViewModel()
+    val isUserAuthenticated by splashViewModel.isUserAuthenticated.collectAsState()
     VastuMobileTheme {
-        NavigationRoot(
-            isLoggedIn = isLoggedIn,
-            onLoginSuccess = {} // The login logic is handled in the ViewModel, this is just for state propagation
-        )
+        if (isUserAuthenticated != null) {
+            NavigationRoot(isLoggedIn = isUserAuthenticated!!)
+        }
     }
 }

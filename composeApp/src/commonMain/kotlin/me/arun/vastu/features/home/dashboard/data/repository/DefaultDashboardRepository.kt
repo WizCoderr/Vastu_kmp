@@ -1,7 +1,8 @@
 package me.arun.vastu.features.home.dashboard.data.repository
 
 import me.arun.vastu.features.home.dashboard.data.mappers.toDomain
-import me.arun.vastu.features.home.dashboard.data.model.*
+import me.arun.vastu.features.home.dashboard.data.model.DashboardCourseDto
+import me.arun.vastu.features.home.dashboard.data.model.DashboardDto
 import me.arun.vastu.features.home.dashboard.domain.model.Dashboard
 import me.arun.vastu.features.home.dashboard.domain.repository.DashboardRepository
 
@@ -20,7 +21,8 @@ class DefaultDashboardRepository : DashboardRepository {
                     progress = 45,
                     isCompleted = false,
                     lastWatchedPositionMillis = 1200000,
-                    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                    thumbnail = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                 ),
                 DashboardCourseDto(
                     id = "2",
@@ -30,7 +32,8 @@ class DefaultDashboardRepository : DashboardRepository {
                     progress = 12,
                     isCompleted = false,
                     lastWatchedPositionMillis = 300000,
-                    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+                    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                    thumbnail = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
                 ),
                 DashboardCourseDto(
                     id = "3",
@@ -40,7 +43,8 @@ class DefaultDashboardRepository : DashboardRepository {
                     progress = 100,
                     isCompleted = true,
                     lastWatchedPositionMillis = 0,
-                    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+                    videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                    thumbnail = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
                 )
             )
         )

@@ -21,12 +21,15 @@ import me.arun.vastu.features.home.courses.presentation.CoursesRoot
 import me.arun.vastu.features.home.courses.screens.details.presentation.DetailsRoot
 import me.arun.vastu.features.home.dashboard.presentation.DashboardEvent
 import me.arun.vastu.features.home.dashboard.presentation.DashboardRoot
+import me.arun.vastu.features.home.profile.presentation.ProfileEvent
+import me.arun.vastu.features.home.profile.presentation.ProfileRoot
 import me.arun.vastu.features.vedio.presentation.VideoPlayerRoot
 
 val TOP_LEVEL_DESTINATIONS: Map<NavKey, AppScreen> = mapOf(
     AppScreen.Dashboard to AppScreen.Dashboard,
     AppScreen.Courses to AppScreen.Courses,
     AppScreen.Stats to AppScreen.Stats,
+    AppScreen.Profile to AppScreen.Profile,
 )
 
 @Composable
@@ -87,13 +90,24 @@ fun NavigationRoot(
                         }
                     }
                     entry<AppScreen.CourseDetails> {
-                        DetailsRoot {event ->
+                        DetailsRoot(it.courseId) {event ->
                             when(event){
                                 else -> {}
                             }
                         }
                     }
                     entry<AppScreen.Stats> {
+                    }
+                    entry<AppScreen.Profile> {
+                        ProfileRoot { event ->
+                            when (event) {
+                                ProfileEvent.Logout -> {
+                                    navigator.logout()
+                                    navigator.navigate(AppScreen.Login(redirectTo = AppScreen.Dashboard))
+                                }
+                                else -> {}
+                            }
+                        }
                     }
                     entry<AppScreen.Login> {
                         LoginRoot {event ->

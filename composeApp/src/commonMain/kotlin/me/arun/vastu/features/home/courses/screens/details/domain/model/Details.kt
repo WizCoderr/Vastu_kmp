@@ -1,13 +1,16 @@
 package me.arun.vastu.features.home.courses.screens.details.domain.model
 
-/**
- * Represents the main domain model for the Details feature.
- * This is the "clean" class used within the app (domain, presentation).
- *
- * @property id The unique identifier of the model.
- * @property data An example data field for the model.
- */
-data class Details(
+import me.arun.vastu.domain.model.Chapter
+
+data class CourseDetails(
     val id: String,
-    val data: String
+    val title: String,
+    val description: String,
+    val instructor: String,
+    val price: Double
+)
+
+data class Details(
+    val courseDetails: CourseDetails,
+    val curriculum: List<Chapter>
 )

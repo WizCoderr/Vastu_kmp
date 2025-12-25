@@ -22,9 +22,10 @@ koin-annotations = "2.3.1"
 media3Ui = "1.9.0"
 core-splashscreen = "1.2.0"
 multiplatform-settings = "1.3.0"
-androidx-datastore = "1.1.1"
-okio = "3.9.0"
-kermit = "2.0.4"
+androidx-datastore = "1.2.0"
+okio = "3.16.4"
+kermit = "2.0.8"
+coil = "3.3.0"
 
 [libraries]
 kermit-logger = { module = "co.touchlab:kermit", version.ref = "kermit" }
@@ -70,6 +71,8 @@ androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.re
 core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "core-splashscreen" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings" }
 
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -82,3 +85,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]
 ktor-client=['ktor-client','ktor-client-auth','ktor-content-negotiation','ktor-client-call-logging']
+coil = ["coil-compose"]

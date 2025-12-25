@@ -14,7 +14,7 @@ class GetDetailsDataUseCase  constructor(
     /**
      * Executes the use case.
      */
-    suspend operator fun invoke(): Result<me.arun.vastu.features.home.courses.screens.details.domain.model.Details> {
-        return repository.getDetailsData()
+    suspend operator fun invoke(courseId: String): Result<me.arun.vastu.features.home.courses.screens.details.domain.model.Details> {
+        return repository.getDetailsData(courseId)
     }
 }

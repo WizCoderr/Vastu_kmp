@@ -8,10 +8,7 @@ import me.arun.vastu.features.home.courses.screens.details.domain.model.Details
 interface DetailsRepository {
 
     /**
-     * Retrieves data for the Details feature.
-     *
-     * @return A Result object containing the Details domain model on success,
-     * or an exception on failure.
+     * Fetches the data for the Details feature.
      */
-    suspend fun getDetailsData(): Result<me.arun.vastu.features.home.courses.screens.details.domain.model.Details>
+    suspend fun getDetailsData(courseId: String): Result<Details>
 }

@@ -23,5 +23,10 @@ val bottomBarItems = listOf(
         title = "Courses",
         icon = VastuIcons.course,
         route = AppScreen.Courses
+    ),
+    BottomBarItem(
+        title = "Profile",
+        icon = VastuIcons.Profile,
+        route = AppScreen.Profile
     )
 )

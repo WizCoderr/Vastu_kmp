@@ -8,5 +8,5 @@ import org.koin.dsl.module
  * Koin module that provides data layer dependencies for the Courses feature.
  */
 val coursesDataModule = module {
-    factory<CoursesRepository> { DefaultCoursesRepository() }
+    factory<CoursesRepository> { DefaultCoursesRepository(get()) }
 }

@@ -11,19 +11,23 @@ import me.arun.vastu.data.model.AuthResponse
 import me.arun.vastu.data.model.LoginRequest
 import me.arun.vastu.data.model.RegisterRequest
 
-class AuthRemoteDataSource(private val httpClientProvider: () -> HttpClient) {
+class AuthRemoteDataSource(private val httpClient: HttpClient) {
 
     suspend fun login(loginRequest: LoginRequest): AuthResponse {
-        return httpClientProvider().post(ApiEndpoints.LOGIN) {
+        return httpClient.post(ApiEndpoints.LOGIN) {
             contentType(ContentType.Application.Json)
             setBody(loginRequest)
-        }.body()    
+        }.body()
     }
 
     suspend fun register(registerRequest: RegisterRequest): AuthResponse {
-        return httpClientProvider().post(ApiEndpoints.REGISTER) {
+        return httpClient.post(ApiEndpoints.REGISTER) {
             contentType(ContentType.Application.Json)
             setBody(registerRequest)
         }.body()
+    }
+
+    suspend fun logout() {
+        httpClient.post(ApiEndpoints.LOGOUT)
     }
 }

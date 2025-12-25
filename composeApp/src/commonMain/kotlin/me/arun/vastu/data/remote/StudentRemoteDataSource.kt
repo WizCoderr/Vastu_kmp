@@ -14,27 +14,22 @@ import me.arun.vastu.data.model.PagedResponse
 import me.arun.vastu.data.model.ProgressUpdateRequest
 import me.arun.vastu.data.model.ProgressUpdateResponse
 
-class StudentRemoteDataSource(private val httpClientProvider: () -> HttpClient) {
+class StudentRemoteDataSource(private val httpClient: HttpClient) {
 
-    suspend fun getCourses(page: Int, limit: Int): PagedResponse<Course> {
-        return httpClientProvider().get(ApiEndpoints.COURSES) {
-            url {
-                parameters.append("page", page.toString())
-                parameters.append("limit", limit.toString())
-            }
-        }.body()
+    suspend fun getCourses(): PagedResponse<Course> {
+        return httpClient.get(ApiEndpoints.COURSES).body()
     }
 
     suspend fun getCourseDetails(id: String): Course {
-        return httpClientProvider().get(ApiEndpoints.courseDetails(id)).body()
+        return httpClient.get(ApiEndpoints.courseDetails(id)).body()
     }
 
     suspend fun getCourseCurriculum(id: String): CurriculumResponse {
-        return httpClientProvider().get(ApiEndpoints.courseCurriculum(id)).body()
+        return httpClient.get(ApiEndpoints.courseCurriculum(id)).body()
     }
 
     suspend fun updateProgress(request: ProgressUpdateRequest): ProgressUpdateResponse {
-        return httpClientProvider().post(ApiEndpoints.UPDATE_PROGRESS) {
+        return httpClient.post(ApiEndpoints.UPDATE_PROGRESS) {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()

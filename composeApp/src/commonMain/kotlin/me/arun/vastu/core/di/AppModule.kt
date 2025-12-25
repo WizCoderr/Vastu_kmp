@@ -2,7 +2,8 @@ package me.arun.vastu.core.di
 
 import me.arun.vastu.di.dataModule
 import me.arun.vastu.di.useCaseModule
-import me.arun.vastu.features.auth.di.authViewModelModule
+import me.arun.vastu.features.auth.login.presentation.di.loginPresentationModule
+import me.arun.vastu.features.auth.register.presentation.di.registerPresentationModule
 import me.arun.vastu.features.home.courses.di.courseScreensModule
 import me.arun.vastu.features.home.di.homeModule
 import me.arun.vastu.features.splash.di.splashModule
@@ -22,5 +23,6 @@ val appModule = module {
     includes(courseScreensModule)
     includes(persistenceModule)
     includes(networkModule)
-    includes(authViewModelModule)
+    includes(loginPresentationModule)
+    includes(registerPresentationModule)
 }

@@ -1,27 +1,24 @@
 package me.arun.vastu.data.repository
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
 import kotlinx.coroutines.flow.firstOrNull
-import me.arun.vastu.core.network.ApiEndpoints
-import me.arun.vastu.core.network.dto.AuthResponse
-import me.arun.vastu.core.network.dto.LoginRequest
 import me.arun.vastu.core.network.utils.ApiResult
-import me.arun.vastu.domain.model.RegisterRequest
+import me.arun.vastu.data.model.AuthResponse
+import me.arun.vastu.data.model.LoginRequest
+import me.arun.vastu.data.model.RegisterRequest
+import me.arun.vastu.data.remote.AuthRemoteDataSource
 import me.arun.vastu.domain.repository.AuthRepository
 import me.arun.vastu.persistence.repository.PreferencesRepository
 
 class AuthRepositoryImpl(
-    private val httpClient: HttpClient,
+    private val authRemoteDataSource: AuthRemoteDataSource,
     private val preferencesRepository: PreferencesRepository
 ) : AuthRepository {
     override suspend fun register(registerRequest: RegisterRequest): ApiResult<AuthResponse> {
         return try {
-            httpClient.post(ApiEndpoints.REGISTER) {
-                setBody(registerRequest)
-            }.body()
+            ApiResult(
+                success = true,
+                data = authRemoteDataSource.register(registerRequest)
+            )
         } catch (e: Exception) {
             ApiResult(
                 success = false,
@@ -33,9 +30,10 @@ class AuthRepositoryImpl(
 
     override suspend fun login(loginRequest: LoginRequest): ApiResult<AuthResponse> {
         return try {
-            httpClient.post(ApiEndpoints.LOGIN) {
-                setBody(loginRequest)
-            }.body()
+            ApiResult(
+                success = true,
+                data = authRemoteDataSource.login(loginRequest)
+            )
         } catch (e: Exception) {
             ApiResult(
                 success = false,
@@ -43,6 +41,16 @@ class AuthRepositoryImpl(
                 error = e.message ?: "Unknown error"
             )
         }
+    }
+
+    override suspend fun logout() {
+        try {
+            authRemoteDataSource.logout()
+        } catch (e: Exception) {
+            // Even if remote logout fails, clear the token locally
+            e.printStackTrace()
+        }
+        clearAuthToken()
     }
 
     override suspend fun saveAuthToken(token: String) {

@@ -2,6 +2,7 @@ package me.arun.vastu.features.home.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import me.arun.vastu.domain.usecase.auth.LogoutUseCase
 import me.arun.vastu.features.home.profile.domain.usecase.GetProfileDataUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -10,7 +11,8 @@ import kotlinx.coroutines.launch
  * Manages the business logic and state for the Profile feature.
  */
 class ProfileViewModel(
-    private val getProfileDataUseCase: GetProfileDataUseCase
+    private val getProfileDataUseCase: GetProfileDataUseCase,
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -38,7 +40,10 @@ class ProfileViewModel(
             }
 
             ProfileAction.OnLogoutClick -> {
-                emitEvent(ProfileEvent.Logout)
+                viewModelScope.launch {
+                    logoutUseCase()
+                    emitEvent(ProfileEvent.Logout)
+                }
             }
         }
     }

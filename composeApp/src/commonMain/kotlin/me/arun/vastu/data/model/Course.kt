@@ -8,5 +8,8 @@ data class Course(
     val title: String,
     val description: String,
     val instructor: String,
-    val price: Double
+    val price: Double,
+    val tag: String,
+    val imageUrl: String?,
+    val accessType: String
 )

@@ -14,7 +14,7 @@ class StudentRepositoryImpl(
 ) : StudentRepository {
     override suspend fun getCourses(page: Int, limit: Int): Result<List<Course>> {
         return runCatching {
-            studentRemoteDataSource.getCourses(page, limit).items.map { it.toDomain() }
+            studentRemoteDataSource.getCourses().items.map { it.toDomain() }
         }
     }
 

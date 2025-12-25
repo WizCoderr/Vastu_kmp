@@ -23,6 +23,7 @@ fun DashboardCourse.toDashboardUiCourse(): DashboardUiCourse {
         progress = this.progress,
         isCompleted = this.isCompleted,
         lastWatchedPositionMillis = this.lastWatchedPositionMillis,
-        videoUrl = this.videoUrl
+        videoUrl = this.videoUrl,
+        thumbnail = this.thumbnail
     )
 }

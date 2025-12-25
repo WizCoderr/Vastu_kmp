@@ -88,15 +88,17 @@ private fun DashboardScreen(
 
                     item {
                         DashboardHeader(
-                            userName = state.userName,
-                            activeCount = state.activeCoursesCount,
+                            name = state.userName,
+                            totalActive = state.activeCoursesCount,
+                            onProfileClick = { onAction(DashboardAction.OnProfileClick) }
                         )
                     }
 
                     items(state.enrolledCourses, key = { it.id }) { course ->
                         DashboardCourseCard(
                             course = course,
-                            onContinueClick = {
+                            onClick = { onAction(DashboardAction.OnCourseClick(course.id)) },
+                            onContinue = {
                                 onAction(DashboardAction.OnContinueLearning(course.id, course.lastWatchedPositionMillis))
                             }
                         )
@@ -114,11 +116,11 @@ fun DashboardScreenPreview(
 ) {
     VastuMobileTheme {
         val courses = listOf(
-            DashboardUiCourse("1", "Vastu for Home", "Basics of vastu for home", "Vastu", 50, false, 0L, ""),
-            DashboardUiCourse("2", "Vastu for Office", "Basics of vastu for office", "Vastu", 20, false, 0L, ""),
-            DashboardUiCourse("3", "Numerology", "Basics of numerology", "Numerology", 80, false, 0L, ""),
-            DashboardUiCourse("4", "Astrology", "Basics of astrology", "Astrology", 100, true, 0L, ""),
-            DashboardUiCourse("5", "Palmistry", "Basics of palmistry", "Palmistry", 0, false, 0L, "")
+            DashboardUiCourse("1", "Vastu for Home", "Basics of vastu for home", "Vastu", 50, false, 0L, "",  ""),
+            DashboardUiCourse("2", "Vastu for Office", "Basics of vastu for office", "Vastu", 20, false, 0L, "",""),
+            DashboardUiCourse("3", "Numerology", "Basics of numerology", "Numerology", 80, false, 0L, "",""),
+            DashboardUiCourse("4", "Astrology", "Basics of astrology", "Astrology", 100, true, 0L, "",""),
+            DashboardUiCourse("5", "Palmistry", "Basics of palmistry", "Palmistry", 0, false, 0L, "","")
         )
         DashboardScreen(
             state = DashboardState(

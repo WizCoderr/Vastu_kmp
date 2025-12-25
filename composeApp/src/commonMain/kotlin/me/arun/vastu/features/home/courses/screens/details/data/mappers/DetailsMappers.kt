@@ -1,16 +1,38 @@
 package me.arun.vastu.features.home.courses.screens.details.data.mappers
 
-import me.arun.vastu.features.home.courses.screens.details.data.model.DetailsDto
-import me.arun.vastu.features.home.courses.screens.details.domain.model.Details
+import me.arun.vastu.data.model.Chapter as DataChapter
+import me.arun.vastu.data.model.Course as DataCourse
+import me.arun.vastu.data.model.CurriculumResponse
+import me.arun.vastu.data.model.Lesson as DataLesson
+import me.arun.vastu.domain.model.Chapter as DomainChapter
+import me.arun.vastu.domain.model.Lesson as DomainLesson
+import me.arun.vastu.features.home.courses.screens.details.domain.model.CourseDetails
 
-/**
- * Maps a DetailsDto (Data Layer) object to a Details (Domain Layer) object.
- *
- * @return The mapped Details object.
- */
-fun me.arun.vastu.features.home.courses.screens.details.data.model.DetailsDto.toDomain(): me.arun.vastu.features.home.courses.screens.details.domain.model.Details {
-    return _root_ide_package_.me.arun.vastu.features.home.courses.screens.details.domain.model.Details(
-        id = this.uniqueId,
-        data = this.payload ?: "Data not available"
+fun DataCourse.toDomain(): CourseDetails {
+    return CourseDetails(
+        id = id,
+        title = title,
+        description = description,
+        instructor = instructor,
+        price = price
+    )
+}
+
+fun CurriculumResponse.toDomain(): List<DomainChapter> {
+    return chapters.map { it.toDomain() }
+}
+
+fun DataChapter.toDomain(): DomainChapter {
+    return DomainChapter(
+        id = id,
+        title = title,
+        lessons = lessons.map { it.toDomain() }
+    )
+}
+
+fun DataLesson.toDomain(): DomainLesson {
+    return DomainLesson(
+        id = id,
+        title = title
     )
 }

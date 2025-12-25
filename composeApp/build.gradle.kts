@@ -73,6 +73,8 @@ kotlin {
 
             api(libs.kotlin.corotines)
 
+            implementation(libs.bundles.coil)
+
 
             // Ktor Client
             implementation(libs.bundles.ktor.client)

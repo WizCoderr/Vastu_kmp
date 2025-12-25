@@ -1,11 +1,11 @@
 package me.arun.vastu.features.home.courses.data.mappers
 
-import me.arun.vastu.features.home.courses.data.remote.dto.CourseDto
-import me.arun.vastu.features.home.courses.domain.model.Course
+import me.arun.vastu.data.model.Course
 import me.arun.vastu.features.home.courses.domain.model.CourseAccessType
+import me.arun.vastu.features.home.courses.domain.model.Course as DomainCourse
 
-fun CourseDto.toDomain(): Course {
-    return Course(
+fun Course.toDomain(): DomainCourse {
+    return DomainCourse(
         id = id,
         title = title,
         tag = tag,
