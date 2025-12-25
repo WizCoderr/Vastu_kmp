@@ -1,20 +1,19 @@
 package me.arun.vastu.core.navigation
 
+import androidx.navigation3.runtime.NavKey
+
 class Navigator(val state: NavigationState) {
 
-    fun navigate(route: AppScreen) {
+    fun navigate(route: AppScreen, isLoggedIn: Boolean = true) {
+        if (route is ProtectedRoute && !isLoggedIn) {
+            navigate(AppScreen.Login(redirectTo = route), isLoggedIn = true) // isLoggedIn is true here to prevent infinite loop
+            return
+        }
+
         if (route in state.backStacks.keys) {
             state.topLevelRoute = route
         } else {
             state.backStacks[state.topLevelRoute]?.add(route)
-        }
-    }
-
-    fun navigateToProtected(route: AppScreen, isLoggedIn: Boolean) {
-        if (isLoggedIn) {
-            navigate(route)
-        } else {
-            navigate(AppScreen.Login(redirectTo = route))
         }
     }
 
@@ -24,7 +23,9 @@ class Navigator(val state: NavigationState) {
 
         if (currentStack.size > 1) {
             currentStack.removeLastOrNull()
-        } else if (state.topLevelRoute != state.startRoute) {
+        }
+
+        else if (state.topLevelRoute != state.startRoute) {
             state.topLevelRoute = state.startRoute
         }
     }

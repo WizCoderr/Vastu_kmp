@@ -76,9 +76,9 @@ val serializersConfig = SavedStateConfiguration {
             subclass(AppScreen.Stats::class, AppScreen.Stats.serializer())
             subclass(AppScreen.Login::class, AppScreen.Login.serializer())
             subclass(AppScreen.Register::class, AppScreen.Register.serializer())
-            subclass(AppScreen.Enroll::class, AppScreen.Enroll.serializer())
-            subclass(AppScreen.Lecture::class, AppScreen.Lecture.serializer())
-            subclass(AppScreen.MyCourses::class, AppScreen.MyCourses.serializer())
+            subclass(ProtectedRoute.Enroll::class, ProtectedRoute.Enroll.serializer())
+            subclass(ProtectedRoute.Lecture::class, ProtectedRoute.Lecture.serializer())
+            subclass(ProtectedRoute.MyCourses::class, ProtectedRoute.MyCourses.serializer())
         }
     }
 }

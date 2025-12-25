@@ -22,12 +22,14 @@ sealed interface AppScreen : NavKey {
     ) : AppScreen
     @Serializable
     data object Register : AppScreen
+}
 
+sealed interface ProtectedRoute : AppScreen {
     // Protected Routes
     @Serializable
-    data class Enroll(val courseId: String) : AppScreen
+    data class Enroll(val courseId: String) : ProtectedRoute
     @Serializable
-    data class Lecture(val courseId: String, val lectureId: String) : AppScreen
+    data class Lecture(val courseId: String, val lectureId: String) : ProtectedRoute
     @Serializable
-    data object MyCourses : AppScreen
+    data object MyCourses : ProtectedRoute
 }
