@@ -27,20 +27,7 @@ import me.arun.vastu.features.home.dashboard.presentation.DashboardEvent
 import me.arun.vastu.features.home.dashboard.presentation.DashboardRoot
 import me.arun.vastu.features.vedio.presentation.VideoPlayerRoot
 
-// --- This would be in your DI setup and injected ---
-// Placeholder for authentication state
-class AuthViewModel {
-    private val _isUserLoggedIn = MutableStateFlow(false)
-    val isUserLoggedIn: StateFlow<Boolean> = _isUserLoggedIn
 
-    fun login() {
-        _isUserLoggedIn.value = true
-    }
-
-    fun logout() {
-        _isUserLoggedIn.value = false
-    }
-}
 
 val TOP_LEVEL_DESTINATIONS: Map<NavKey, AppScreen> = mapOf(
     AppScreen.Dashboard to AppScreen.Dashboard,
@@ -51,6 +38,8 @@ val TOP_LEVEL_DESTINATIONS: Map<NavKey, AppScreen> = mapOf(
 @Composable
 fun NavigationRoot(
     modifier: Modifier = Modifier,
+    isLoggedIn: Boolean,
+    onLoginSuccess: () -> Unit
 ) {
     val navigationState = rememberNavigationState(
         startRoute = AppScreen.Dashboard,
@@ -59,9 +48,6 @@ fun NavigationRoot(
     val navigator = remember {
         Navigator(navigationState)
     }
-    // This would be injected by Koin
-    val authViewModel: AuthViewModel = remember { AuthViewModel() }
-    val isLoggedIn by authViewModel.isUserLoggedIn.collectAsState()
 
     val currentScreen = navigationState.backStacks[navigationState.topLevelRoute]?.lastOrNull()
 
@@ -120,9 +106,8 @@ fun NavigationRoot(
                         LoginRoot {event ->
                             when(event){
                                 LoginEvent.NavigateToHome -> {
-                                    authViewModel.login()
-                                    // after login, check for a redirect
-                                    val redirectTo = (it.key as AppScreen.Login).redirectTo
+                                    onLoginSuccess()
+                                    val redirectTo = (it).redirectTo
                                     if (redirectTo != null) {
                                         navigator.navigate(redirectTo, true)
                                     } else {
@@ -146,7 +131,7 @@ fun NavigationRoot(
                         // PlaceholderScreen("My Courses")
                     }
                     entry<ProtectedRoute.Lecture> {
-                        val key = it.key
+                        val key = it
                         VideoPlayerRoot(
                             courseId = key.courseId,
                             lastWatchedPositionMillis = 0L, // ViewModel should handle this

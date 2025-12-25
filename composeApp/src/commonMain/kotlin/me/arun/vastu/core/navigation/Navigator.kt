@@ -1,12 +1,10 @@
 package me.arun.vastu.core.navigation
 
-import androidx.navigation3.runtime.NavKey
-
 class Navigator(val state: NavigationState) {
 
     fun navigate(route: AppScreen, isLoggedIn: Boolean = true) {
         if (route is ProtectedRoute && !isLoggedIn) {
-            navigate(AppScreen.Login(redirectTo = route), isLoggedIn = true) // isLoggedIn is true here to prevent infinite loop
+            navigate(AppScreen.Login(redirectTo = route), isLoggedIn = true)
             return
         }
 
