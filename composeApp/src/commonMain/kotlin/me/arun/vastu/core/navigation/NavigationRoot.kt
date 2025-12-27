@@ -12,42 +12,54 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import kotlinx.serialization.json.Json
+import me.arun.vastu.domain.repository.AuthRepository
+import me.arun.vastu.domain.repository.EnrolmentRepository
 import me.arun.vastu.features.auth.login.presentation.LoginEvent
 import me.arun.vastu.features.auth.login.presentation.LoginRoot
 import me.arun.vastu.features.auth.register.presentation.RegisterEvent
 import me.arun.vastu.features.auth.register.presentation.RegisterRoot
 import me.arun.vastu.features.home.courses.presentation.CoursesEvent
 import me.arun.vastu.features.home.courses.presentation.CoursesRoot
+import me.arun.vastu.features.home.courses.screens.details.presentation.DetailsEvent
 import me.arun.vastu.features.home.courses.screens.details.presentation.DetailsRoot
+import me.arun.vastu.features.home.courses.screens.enrolled.presentation.EnrolledRoot
 import me.arun.vastu.features.home.dashboard.presentation.DashboardEvent
 import me.arun.vastu.features.home.dashboard.presentation.DashboardRoot
-import me.arun.vastu.features.home.profile.presentation.ProfileEvent
-import me.arun.vastu.features.home.profile.presentation.ProfileRoot
 import me.arun.vastu.features.vedio.presentation.VideoPlayerRoot
+import org.koin.compose.koinInject
 
 val TOP_LEVEL_DESTINATIONS: Map<NavKey, AppScreen> = mapOf(
     AppScreen.Dashboard to AppScreen.Dashboard,
     AppScreen.Courses to AppScreen.Courses,
     AppScreen.Stats to AppScreen.Stats,
-    AppScreen.Profile to AppScreen.Profile,
 )
 
 @Composable
 fun NavigationRoot(
     modifier: Modifier = Modifier,
-    isLoggedIn: Boolean = false,
 ) {
     val navigationState = rememberNavigationState(
         startRoute = AppScreen.Dashboard,
         topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys
     )
+
+    val authRepository: AuthRepository = koinInject()
+    val enrolmentRepository: EnrolmentRepository = koinInject()
+    val json: Json = koinInject()
+
     val navigator = remember {
-        Navigator(navigationState)
+        Navigator(
+            state = navigationState,
+            authRepository = authRepository,
+            enrolmentRepository = enrolmentRepository,
+            json = json,
+        )
     }
 
     val currentScreen = navigationState.backStacks[navigationState.topLevelRoute]?.lastOrNull()
 
-    val showBottomBar = currentScreen !is ProtectedRoute.Lecture
+    val showBottomBar = currentScreen !is ProtectedRoute.VideoPlayer
 
     Scaffold(
         modifier = modifier,
@@ -58,7 +70,7 @@ fun NavigationRoot(
                          val isSelected = item.route == navigationState.topLevelRoute
                         NavigationBarItem(
                             selected = isSelected,
-                            onClick = { navigator.navigate(item.route, isLoggedIn) },
+                            onClick = { navigator.navigate(item.route) },
                             icon = { Icon(item.icon, contentDescription = item.title) },
                             label = { Text(item.title) }
                         )
@@ -76,8 +88,13 @@ fun NavigationRoot(
                         DashboardRoot {event ->
                             when(event){
                                 is DashboardEvent.NavigateToCourse -> navigator.navigate(AppScreen.CourseDetails(event.courseId))
-                                DashboardEvent.NavigateToProfile -> navigator.navigate(ProtectedRoute.MyCourses, isLoggedIn)
-                                is DashboardEvent.NavigateToVideoPlayer -> navigator.navigate(ProtectedRoute.Lecture(event.courseId, "1"), isLoggedIn)
+                                DashboardEvent.NavigateToProfile -> navigator.navigateProtected(ProtectedRoute.MyCourses)
+                                is DashboardEvent.NavigateToVideoPlayer -> navigator.navigateProtected(
+                                    ProtectedRoute.VideoPlayer(
+                                        courseId = event.courseId,
+                                        lastWatchedPositionMillis = event.lastWatchedPositionMillis,
+                                    )
+                                )
                             }
 
                         }
@@ -92,61 +109,47 @@ fun NavigationRoot(
                     entry<AppScreen.CourseDetails> {
                         DetailsRoot(it.courseId) {event ->
                             when(event){
-                                else -> {}
+                                is DetailsEvent.NavigateToEnroll -> navigator.navigateProtected(ProtectedRoute.Enroll(event.courseId))
+                                is DetailsEvent.NavigateToVideoPlayer -> navigator.navigateProtected(ProtectedRoute.VideoPlayer(event.courseId))
                             }
                         }
                     }
                     entry<AppScreen.Stats> {
                     }
-                    entry<AppScreen.Profile> {
-                        ProfileRoot { event ->
-                            when (event) {
-                                ProfileEvent.Logout -> {
-                                    navigator.logout()
-                                    navigator.navigate(AppScreen.Login(redirectTo = AppScreen.Dashboard))
-                                }
-                                else -> {}
-                            }
-                        }
-                    }
                     entry<AppScreen.Login> {
                         LoginRoot {event ->
                             when(event){
                                 LoginEvent.NavigateToHome -> {
-                                    val redirectTo = (it).redirectTo
-                                    if (redirectTo != null) {
-                                        navigator.navigate(redirectTo, true)
-                                    } else {
-                                        navigator.navigate(AppScreen.Dashboard)
-                                    }
+                                    navigator.onAuthSuccess(it.redirectTo)
                                 }
-                                LoginEvent.NavigateToRegister -> navigator.navigate(AppScreen.Register)
+                                LoginEvent.NavigateToRegister -> navigator.navigate(AppScreen.Register(redirectTo = it.redirectTo))
                             }
                         }
                     }
                     entry<AppScreen.Register> {
                         RegisterRoot {event ->
                             when(event){
-                                RegisterEvent.NavigateToHome -> navigator.navigate(AppScreen.Dashboard)
-                                RegisterEvent.NavigateToLogin -> navigator.navigate(AppScreen.Login(redirectTo = AppScreen.Dashboard))
+                                RegisterEvent.NavigateToHome -> navigator.onAuthSuccess(it.redirectTo)
+                                RegisterEvent.NavigateToLogin -> navigator.navigate(AppScreen.Login(redirectTo = it.redirectTo))
                             }
                         }
                     }
                     entry<ProtectedRoute.MyCourses> {
-                        // This would be your MyCourses screen
-                        // PlaceholderScreen("My Courses")
+                        EnrolledRoot(
+                            onEvent = {
+                            }
+                        )
                     }
-                    entry<ProtectedRoute.Lecture> {
+                    entry<ProtectedRoute.VideoPlayer> {
                         val key = it
                         VideoPlayerRoot(
                             courseId = key.courseId,
-                            lastWatchedPositionMillis = 0L, // ViewModel should handle this
+                            lastWatchedPositionMillis = key.lastWatchedPositionMillis,
                             onEvent = {}
                         )
                     }
                     entry<ProtectedRoute.Enroll> {
-                        // This would be your enroll screen
-                        // PlaceholderScreen("Enroll in course ${it.key.courseId}")
+                        Text("Enroll for courseId: ${it.courseId}")
                     }
                 }
             ),

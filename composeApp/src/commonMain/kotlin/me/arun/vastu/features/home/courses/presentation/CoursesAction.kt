@@ -6,4 +6,5 @@ package me.arun.vastu.features.home.courses.presentation
  */
 sealed interface CoursesAction {
     data class OnCourseClick(val courseId: String) : CoursesAction
+    data class OnTabChange(val tab: CoursesTab) : CoursesAction // NEW
 }

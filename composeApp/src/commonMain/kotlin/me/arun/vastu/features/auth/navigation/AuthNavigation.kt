@@ -1,7 +1,6 @@
 package me.arun.vastu.features.auth.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
@@ -10,19 +9,21 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-import me.arun.vastu.domain.usecase.auth.SaveAuthTokenUseCase
+import me.arun.vastu.features.auth.landing.presentation.LandingEvent
+import me.arun.vastu.features.auth.landing.presentation.LandingRoot
 import me.arun.vastu.features.auth.login.presentation.LoginEvent
 import me.arun.vastu.features.auth.login.presentation.LoginRoot
 import me.arun.vastu.features.auth.register.presentation.RegisterEvent
 import me.arun.vastu.features.auth.register.presentation.RegisterRoot
-import org.koin.compose.koinInject
 
 @Serializable
 sealed interface AuthRoutes : NavKey {
+    @Serializable
+    data object AuthLanding : AuthRoutes
+
     @Serializable
     data object AuthRegister : AuthRoutes
 
@@ -35,19 +36,20 @@ sealed interface AuthRoutes : NavKey {
 fun AuthNavigation(
     modifier: Modifier = Modifier,
     navigateToHome: () -> Unit,
-    saveAuthTokenUseCase: SaveAuthTokenUseCase = koinInject()
+    navigateToExploreCourses: () -> Unit = {},
+    startRoute: AuthRoutes = AuthRoutes.AuthLanding,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
             serializersModule = SerializersModule {
                 polymorphic(NavKey::class) {
+                    subclass(AuthRoutes.AuthLanding::class, AuthRoutes.AuthLanding.serializer())
                     subclass(AuthRoutes.AuthRegister::class, AuthRoutes.AuthRegister.serializer())
                     subclass(AuthRoutes.AuthLogin::class, AuthRoutes.AuthLogin.serializer())
                 }
             }
         },
-        AuthRoutes.AuthLogin
+        startRoute
     )
     NavDisplay(
         modifier = modifier,
@@ -57,14 +59,21 @@ fun AuthNavigation(
             rememberViewModelStoreNavEntryDecorator()
         ),
         entryProvider = entryProvider {
+            entry<AuthRoutes.AuthLanding> {
+                LandingRoot {onEvent->
+                    when(onEvent){
+                        is LandingEvent.NavigateToExplore->{navigateToExploreCourses.invoke()}
+                        is LandingEvent.NavigateToLogin->{backStack.add(AuthRoutes.AuthLogin)}
+                        is LandingEvent.NavigateToRegister->{backStack.add(AuthRoutes.AuthRegister)}
+                    }
+
+                }
+            }
             entry<AuthRoutes.AuthRegister> {
                 RegisterRoot(
                     onEvent = { events ->
                         when (events) {
                             is RegisterEvent.NavigateToHome -> {
-                                coroutineScope.launch {
-                                    saveAuthTokenUseCase("dummy_token")
-                                }
                                 navigateToHome()
                             }
 
@@ -80,9 +89,6 @@ fun AuthNavigation(
                     onEvent = { events ->
                         when (events) {
                             is LoginEvent.NavigateToHome -> {
-                                coroutineScope.launch {
-                                    saveAuthTokenUseCase("dummy_token")
-                                }
                                 navigateToHome()
                             }
 

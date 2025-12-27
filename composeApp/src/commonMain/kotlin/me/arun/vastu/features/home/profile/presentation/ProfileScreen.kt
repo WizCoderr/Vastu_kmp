@@ -77,7 +77,14 @@ private fun ProfileScreen(
     ) {
         if (state.isLoading) {
             CircularProgressIndicator()
-        } else {
+        } else if (!state.isAuthenticated) { // If not authenticated, show sign-in button
+            OutlinedButton(
+                onClick = { onAction(ProfileAction.OnSignInClick) },
+                modifier = Modifier.fillMaxWidth(0.8f)
+            ) {
+                Text("Sign In")
+            }
+        } else { // If authenticated, show profile details
             Column(
                 modifier = Modifier
                     .fillMaxSize()

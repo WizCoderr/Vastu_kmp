@@ -42,7 +42,7 @@ fun rememberHomeNavigationState(
     startRoute: NavKey,
     homeTopLevelRoutes: Set<NavKey>
 ): NavigationState {
-    val topLevelRoute = rememberSerializable(
+    val homeTopLevelRoute = rememberSerializable(
         startRoute,
         homeTopLevelRoutes,
         configuration = serializersConfig,
@@ -61,18 +61,19 @@ fun rememberHomeNavigationState(
     return remember(startRoute, homeTopLevelRoutes) {
         NavigationState(
             startRoute = startRoute,
-            homeTopLevelRoute = topLevelRoute,
-            backStacks = backStacks
+            homeTopLevelRoute = homeTopLevelRoute,
+            backStacks = backStacks,
         )
     }
 }
 
-val serializersConfig = SavedStateConfiguration {
+private val serializersConfig = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
             subclass(HomeDestinations.Dashboard::class, HomeDestinations.Dashboard.serializer())
             subclass(HomeDestinations.Courses::class, HomeDestinations.Courses.serializer())
             subclass(HomeDestinations.Profile::class, HomeDestinations.Profile.serializer())
+            subclass(HomeDestinations.VideoPlayer::class, HomeDestinations.VideoPlayer.serializer())
         }
     }
 }

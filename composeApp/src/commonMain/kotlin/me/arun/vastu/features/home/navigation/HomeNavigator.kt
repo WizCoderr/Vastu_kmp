@@ -15,12 +15,11 @@ class HomeNavigator(val state: NavigationState) {
     fun goBack() {
         val currentStack = state.backStacks[state.homeTopLevelRoute]
             ?: error("Back stack for ${state.homeTopLevelRoute} doesn't exist")
-        val currentRoute = currentStack.last()
 
-        if (currentRoute == state.homeTopLevelRoute) {
-            state.homeTopLevelRoute = state.startRoute
-        } else {
+        if (currentStack.size > 1) {
             currentStack.removeLastOrNull()
+        } else if (state.homeTopLevelRoute != state.startRoute) {
+            state.homeTopLevelRoute = state.startRoute
         }
     }
 }

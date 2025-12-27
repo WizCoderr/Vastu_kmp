@@ -51,7 +51,7 @@ fun LoginRoot(
 
     LoginScreen(
         state = state,
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
     )
 }
 
@@ -61,7 +61,7 @@ fun LoginRoot(
 @Composable
 private fun LoginScreen(
     state: LoginState,
-    onAction: (LoginAction) -> Unit
+    onAction: (LoginAction) -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
     Box(

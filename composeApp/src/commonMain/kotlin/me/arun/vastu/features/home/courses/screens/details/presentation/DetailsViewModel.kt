@@ -94,6 +94,9 @@ class DetailsViewModel constructor(
                 viewModelScope.launch {
 
 
+                    _event.emit(DetailsEvent.NavigateToEnroll(courseId))
+
+
                     createPaymentIntentUseCase(PaymentRequest(courseId))
 
 

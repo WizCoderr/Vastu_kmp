@@ -71,7 +71,7 @@ private fun CoursesScreen(
             }
         }
 
-        state.courses.isEmpty() -> {
+        state.allCourses.isEmpty() -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -85,10 +85,8 @@ private fun CoursesScreen(
 
         else -> {
             CoursesContent(
-                courses = state.courses,
-                onCourseClick = { courseId ->
-                    onAction(CoursesAction.OnCourseClick(courseId))
-                }
+                state = state,
+                onAction = onAction
             )
         }
     }

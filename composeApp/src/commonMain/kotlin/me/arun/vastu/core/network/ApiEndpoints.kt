@@ -8,7 +8,9 @@ object ApiEndpoints {
 
     // Student Operations
     private const val STUDENT_API = "${BASE_URL}api/student"
+    private const val PUBLIC_API = "${BASE_URL}api/public"
     const val COURSES = "$STUDENT_API/courses"
+    const val PUBLIC_COURSES = "$PUBLIC_API/courses"
     fun courseDetails(id: String) = "$COURSES/$id"
     fun courseCurriculum(id: String) = "$COURSES/$id/curriculum"
     const val UPDATE_PROGRESS = "$STUDENT_API/progress/update"

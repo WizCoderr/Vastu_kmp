@@ -13,5 +13,7 @@
     <!--  feature/Home Strings  -->
     <string name="feature_home_dashboard">Dashboard</string>
     <string name="feature_home_course">Course</string>
+    <string name="feature_home_all_course">All Course</string>
+    <string name="feature_home_enrolled_course">Enrolled Course</string>
     <string name="feature_home_profile">Profile</string>
 </resources>

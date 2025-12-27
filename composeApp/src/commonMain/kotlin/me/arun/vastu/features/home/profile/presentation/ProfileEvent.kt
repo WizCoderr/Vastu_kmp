@@ -9,4 +9,5 @@ sealed interface ProfileEvent {
     data object NavigateToPrivacy : ProfileEvent
     data object NavigateToTerms : ProfileEvent
     data object Logout : ProfileEvent
+    data object NavigateToLogin : ProfileEvent
 }

@@ -1,5 +1,6 @@
 package me.arun.vastu.features.auth.di
 
+import me.arun.vastu.features.auth.landing.presentation.di.landingPresentationModule
 import me.arun.vastu.features.auth.login.data.di.loginDataModule
 import me.arun.vastu.features.auth.login.domain.di.loginDomainModule
 import me.arun.vastu.features.auth.login.presentation.di.loginPresentationModule
@@ -9,6 +10,7 @@ import me.arun.vastu.features.auth.register.presentation.di.registerPresentation
 import org.koin.dsl.module
 
 val authModule = module {
+    includes(landingPresentationModule)
     includes(loginDataModule)
     includes(loginDomainModule)
     includes(loginPresentationModule)

@@ -15,8 +15,9 @@ class DefaultCoursesRepository(
 
     override suspend fun getCoursesData(): Result<Courses> {
         return try {
-            val courses = studentRemoteDataSource.getCourses().items.map { it.toDomain() }
-            val domainModel = Courses(allCourses = courses)
+            val courses = studentRemoteDataSource.getCourses().data.map { it.toDomain() }
+            val enrolledCourses = courses.filter { it.isEnrolled }
+            val domainModel = Courses(allCourses = courses, enrolledCourses = enrolledCourses)
             Result.success(domainModel)
         } catch (e: Exception) {
             Result.failure(e)

@@ -9,4 +9,5 @@ sealed interface ProfileAction {
     data object OnPrivacyClick : ProfileAction
     data object OnTermsClick : ProfileAction
     data object OnLogoutClick : ProfileAction
+    data object OnSignInClick : ProfileAction
 }

@@ -1,67 +1,54 @@
 package me.arun.vastu.data.repository
 
-import kotlinx.coroutines.flow.firstOrNull
-import me.arun.vastu.core.network.utils.ApiResult
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import me.arun.vastu.data.local.AuthLocalDataSource
 import me.arun.vastu.data.model.AuthResponse
 import me.arun.vastu.data.model.LoginRequest
 import me.arun.vastu.data.model.RegisterRequest
 import me.arun.vastu.data.remote.AuthRemoteDataSource
 import me.arun.vastu.domain.repository.AuthRepository
-import me.arun.vastu.persistence.repository.PreferencesRepository
 
+/**
+ * Dummy implementation for demonstration purposes.
+ * In a real app, this would check a DataStore or Keychain for a valid auth token.
+ */
 class AuthRepositoryImpl(
     private val authRemoteDataSource: AuthRemoteDataSource,
-    private val preferencesRepository: PreferencesRepository
+    private val authLocalDataSource: AuthLocalDataSource,
 ) : AuthRepository {
-    override suspend fun register(registerRequest: RegisterRequest): ApiResult<AuthResponse> {
-        return try {
-            ApiResult(
-                success = true,
-                data = authRemoteDataSource.register(registerRequest)
-            )
-        } catch (e: Exception) {
-            ApiResult(
-                success = false,
-                data = null,
-                error = e.message ?: "Unknown error"
-            )
-        }
+    private val isLoggedIn = MutableStateFlow(authLocalDataSource.getAuthToken() != null)
+
+    override fun isUserLoggedIn(): Boolean = isLoggedIn.value
+
+    override fun observeAuthState(): Flow<Boolean> = isLoggedIn
+
+    override suspend fun login(loginRequest: LoginRequest): AuthResponse {
+        val response = authRemoteDataSource.login(loginRequest)
+        saveAuthToken(response.token)
+        return response
     }
 
-    override suspend fun login(loginRequest: LoginRequest): ApiResult<AuthResponse> {
-        return try {
-            ApiResult(
-                success = true,
-                data = authRemoteDataSource.login(loginRequest)
-            )
-        } catch (e: Exception) {
-            ApiResult(
-                success = false,
-                data = null,
-                error = e.message ?: "Unknown error"
-            )
-        }
+    override suspend fun register(registerRequest: RegisterRequest): AuthResponse {
+        val response = authRemoteDataSource.register(registerRequest)
+        saveAuthToken(response.token)
+        return response
     }
 
     override suspend fun logout() {
-        try {
-            authRemoteDataSource.logout()
-        } catch (e: Exception) {
-            // Even if remote logout fails, clear the token locally
-            e.printStackTrace()
-        }
+        authRemoteDataSource.logout()
         clearAuthToken()
     }
 
     override suspend fun saveAuthToken(token: String) {
-        preferencesRepository.saveAuthToken(token)
+        authLocalDataSource.saveAuthToken(token)
+        isLoggedIn.value = true
     }
 
-    override suspend fun getAuthToken(): String? {
-        return preferencesRepository.getAuthToken().firstOrNull()
-    }
+    override suspend fun getAuthToken(): String? = authLocalDataSource.getAuthToken()
 
     override suspend fun clearAuthToken() {
-        preferencesRepository.saveAuthToken("")
+        authLocalDataSource.clearAuthToken()
+        isLoggedIn.value = false
     }
 }

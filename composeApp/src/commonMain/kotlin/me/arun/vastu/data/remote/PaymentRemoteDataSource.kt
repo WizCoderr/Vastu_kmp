@@ -10,10 +10,10 @@ import me.arun.vastu.core.network.ApiEndpoints
 import me.arun.vastu.data.model.PaymentIntentRequest
 import me.arun.vastu.data.model.PaymentIntentResponse
 
-class PaymentRemoteDataSource(private val httpClientProvider: () -> HttpClient) {
+class PaymentRemoteDataSource(private val httpClient: HttpClient) {
 
     suspend fun createPaymentIntent(request: PaymentIntentRequest): PaymentIntentResponse {
-        return httpClientProvider().post(ApiEndpoints.CREATE_PAYMENT_INTENT) {
+        return httpClient.post(ApiEndpoints.CREATE_PAYMENT_INTENT) {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()

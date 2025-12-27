@@ -5,5 +5,6 @@ package me.arun.vastu.features.home.courses.screens.details.presentation
  * These events are meant to be consumed only once (e.g., navigation, snackbar).
  */
 sealed interface DetailsEvent {
-    // Example: data class NavigateToDetails(val screenId: String) : DetailsEvent
+    data class NavigateToEnroll(val courseId: String) : DetailsEvent
+    data class NavigateToVideoPlayer(val courseId: String) : DetailsEvent
 }

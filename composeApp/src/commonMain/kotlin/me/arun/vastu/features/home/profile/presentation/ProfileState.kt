@@ -16,5 +16,6 @@ data class ProfileState(
     val joinedDate: String = "",
     val appVersion: String = "",
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isAuthenticated: Boolean = false
 )

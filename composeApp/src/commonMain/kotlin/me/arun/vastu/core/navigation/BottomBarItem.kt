@@ -1,9 +1,5 @@
 package me.arun.vastu.core.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.StackedBarChart
 import androidx.compose.ui.graphics.vector.ImageVector
 import me.arun.vastu.core.components.icons.VastuIcons
 
@@ -25,8 +21,8 @@ val bottomBarItems = listOf(
         route = AppScreen.Courses
     ),
     BottomBarItem(
-        title = "Profile",
-        icon = VastuIcons.Profile,
-        route = AppScreen.Profile
+        title = "Stats",
+        icon = VastuIcons.Notifications,
+        route = AppScreen.Stats
     )
 )

@@ -2,6 +2,7 @@ package me.arun.vastu.features.home.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import me.arun.vastu.domain.usecase.auth.GetAuthTokenUseCase
 import me.arun.vastu.domain.usecase.auth.LogoutUseCase
 import me.arun.vastu.features.home.profile.domain.usecase.GetProfileDataUseCase
 import kotlinx.coroutines.flow.*
@@ -12,7 +13,8 @@ import kotlinx.coroutines.launch
  */
 class ProfileViewModel(
     private val getProfileDataUseCase: GetProfileDataUseCase,
-    private val logoutUseCase: LogoutUseCase
+    private val logoutUseCase: LogoutUseCase,
+    private val getAuthTokenUseCase: GetAuthTokenUseCase // Inject GetAuthTokenUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -45,6 +47,9 @@ class ProfileViewModel(
                     emitEvent(ProfileEvent.Logout)
                 }
             }
+            ProfileAction.OnSignInClick -> { // Handle new action
+                emitEvent(ProfileEvent.NavigateToLogin)
+            }
         }
     }
 
@@ -52,28 +57,42 @@ class ProfileViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
 
-            getProfileDataUseCase()
-                .onSuccess { profile ->
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            name = profile.name,
-                            email = profile.email,
-                            institute = profile.institute,
-                            studentId = profile.studentId,
-                            joinedDate = profile.joinedDate,
-                            appVersion = profile.appVersion
-                        )
+            val authToken = getAuthTokenUseCase()
+            val isAuthenticated = !authToken.isNullOrEmpty()
+
+            if (isAuthenticated) {
+                getProfileDataUseCase()
+                    .onSuccess { profile ->
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                name = profile.name,
+                                email = profile.email,
+                                institute = profile.institute,
+                                studentId = profile.studentId,
+                                joinedDate = profile.joinedDate,
+                                appVersion = profile.appVersion,
+                                isAuthenticated = true // Set isAuthenticated to true
+                            )
+                        }
                     }
-                }
-                .onFailure { throwable ->
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = throwable.message ?: "Something went wrong"
-                        )
+                    .onFailure { throwable ->
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                error = throwable.message ?: "Something went wrong",
+                                isAuthenticated = true // Still authenticated, but failed to load profile
+                            )
+                        }
                     }
+            } else {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        isAuthenticated = false // Not authenticated
+                    )
                 }
+            }
         }
     }
 

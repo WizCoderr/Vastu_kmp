@@ -2,8 +2,7 @@ package me.arun.vastu.core.di
 
 import me.arun.vastu.di.dataModule
 import me.arun.vastu.di.useCaseModule
-import me.arun.vastu.features.auth.login.presentation.di.loginPresentationModule
-import me.arun.vastu.features.auth.register.presentation.di.registerPresentationModule
+import me.arun.vastu.features.auth.di.authModule
 import me.arun.vastu.features.home.courses.di.courseScreensModule
 import me.arun.vastu.features.home.di.homeModule
 import me.arun.vastu.features.splash.di.splashModule
@@ -18,11 +17,10 @@ import org.koin.dsl.module
 val appModule = module {
     includes(homeModule)
     includes(splashModule)
+    includes(authModule)
     includes(dataModule)
     includes(useCaseModule)
     includes(courseScreensModule)
     includes(persistenceModule)
     includes(networkModule)
-    includes(loginPresentationModule)
-    includes(registerPresentationModule)
 }

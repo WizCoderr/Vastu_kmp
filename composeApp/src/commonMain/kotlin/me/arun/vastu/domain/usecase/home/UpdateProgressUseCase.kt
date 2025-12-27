@@ -1,10 +1,13 @@
 package me.arun.vastu.domain.usecase.home
 
+import me.arun.vastu.data.model.ProgressUpdateRequest
+import me.arun.vastu.data.remote.StudentRemoteDataSource
 import me.arun.vastu.domain.model.Progress
-import me.arun.vastu.domain.repository.StudentRepository
 
 class UpdateProgressUseCase(
-    private val studentRepository: StudentRepository
+    private val studentRemoteDataSource: StudentRemoteDataSource
 ) {
-    suspend operator fun invoke(progress: Progress) = studentRepository.updateProgress(progress)
+    suspend operator fun invoke(progress: Progress) {
+        studentRemoteDataSource.updateProgress(ProgressUpdateRequest(progress.courseId, progress.lessonId, progress.completed))
+    }
 }

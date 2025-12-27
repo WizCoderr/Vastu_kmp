@@ -7,16 +7,11 @@ package me.arun.vastu.features.home.courses.domain.model
 data class Course(
     val id: String,
     val title: String,
-    val tag: String,
-    val imageUrl: String?,
-    val accessType: CourseAccessType
+    val thumbnail: String,
+    val isEnrolled: Boolean = false
 )
-enum class CourseAccessType {
-    BATCH,
-    LIFETIME,
-    RECORDED,
-    COMBINED
-}
+
 data class Courses(
-    val allCourses: List<Course>
+    val allCourses: List<Course>,
+    val enrolledCourses: List<Course>
 )

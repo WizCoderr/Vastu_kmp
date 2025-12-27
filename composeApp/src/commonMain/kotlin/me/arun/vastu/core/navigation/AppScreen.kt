@@ -14,24 +14,28 @@ sealed interface AppScreen : NavKey {
     data class CourseDetails(val courseId: String) : AppScreen
     @Serializable
     data object Stats : AppScreen
-    @Serializable
-    data object Profile : AppScreen
 
     // Auth Routes
     @Serializable
     data class Login(
-        val redirectTo: AppScreen? = null
+        val redirectTo: String? = null
     ) : AppScreen
     @Serializable
-    data object Register : AppScreen
+    data class Register(
+        val redirectTo: String? = null
+    ) : AppScreen
 }
 
+@Serializable
 sealed interface ProtectedRoute : AppScreen {
     // Protected Routes
     @Serializable
     data class Enroll(val courseId: String) : ProtectedRoute
     @Serializable
-    data class Lecture(val courseId: String, val lectureId: String) : ProtectedRoute
+    data class VideoPlayer(
+        val courseId: String,
+        val lastWatchedPositionMillis: Long = 0L,
+    ) : ProtectedRoute
     @Serializable
     data object MyCourses : ProtectedRoute
 }
